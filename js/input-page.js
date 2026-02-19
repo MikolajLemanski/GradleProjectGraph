@@ -107,8 +107,12 @@ export function formatErrorMessage(errorCode, context = {}) {
         },
         'rate_limited': {
             title: 'Rate Limit Exceeded',
-            message: 'GitHub API rate limit has been exceeded.',
-            suggestion: 'Please wait a few minutes and try again, or authenticate with GitHub for higher limits.'
+            message: context.resetTime 
+                ? `GitHub API rate limit exceeded. Resets at ${new Date(context.resetTime).toLocaleTimeString()}.`
+                : 'GitHub API rate limit has been exceeded.',
+            suggestion: context.remaining !== undefined && context.remaining === 0
+                ? 'You have used all available requests. Wait for the rate limit to reset, or authenticate with GitHub for higher limits (5000/hour).'
+                : 'Please wait a few minutes and try again, or authenticate with GitHub for higher limits.'
         },
         'network_error': {
             title: 'Network Error',
@@ -205,12 +209,36 @@ async function handleAnalyzeClick() {
         const gradleParser = await import('./gradle-parser.js');
         const graphPage = await import('./graph-page.js');
         
-        // Run analysis
+        // Get UI elements for progress updates
+        const loadingMessage = document.getElementById('loading-message');
+        const loadingDetail = document.getElementById('loading-detail');
+        
+        // Run analysis with progress callback
         const analysisResult = await githubClient.analyzeRepository(
             result.normalizedOwner,
             result.normalizedRepo,
-            result.normalizedRef
+            result.normalizedRef,
+            (progress) => {
+                // Update loading message based on progress
+                if (loadingMessage) {
+                    loadingMessage.textContent = progress.message || 'Analyzing repository...';
+                }
+                if (loadingDetail) {
+                    if (progress.detail) {
+                        loadingDetail.textContent = progress.detail;
+                        if (progress.remaining !== undefined) {
+                            loadingDetail.textContent += ` (${progress.remaining} API requests remaining)`;
+                        }
+                    } else {
+                        loadingDetail.textContent = '';
+                    }
+                }
+            }
         );
+        
+        // Update final message
+        if (loadingMessage) loadingMessage.textContent = 'Building dependency graph...';
+        if (loadingDetail) loadingDetail.textContent = '';
         
         // Assemble graph from analysis
         const graphResult = gradleParser.assembleGraphFromAnalysis(analysisResult);
@@ -233,7 +261,9 @@ async function handleAnalyzeClick() {
         
         // Format error message
         const formattedError = formatErrorMessage(error.errorCode || 'api_error', {
-            message: error.message
+            message: error.message,
+            resetTime: error.resetTime,
+            remaining: error.remaining
         });
         
         if (errorEl) {
