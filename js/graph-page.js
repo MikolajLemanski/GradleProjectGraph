@@ -11,6 +11,12 @@ export function initGraphPage() {
     if (backBtn) {
         backBtn.addEventListener('click', handleBackClick);
     }
+
+    // Wire up debug re-render button
+    const reRenderBtn = document.getElementById('reRenderBtn');
+    if (reRenderBtn) {
+        reRenderBtn.addEventListener('click', handleReRender);
+    }
 }
 
 function handleBackClick() {
@@ -18,6 +24,50 @@ function handleBackClick() {
     import('./input-page.js').then(module => {
         module.showInputPage();
     });
+}
+
+async function handleReRender() {
+    const debugInput = document.getElementById('mermaidDebugInput');
+    const mermaidGraphEl = document.getElementById('mermaid-graph');
+    
+    if (!debugInput || !mermaidGraphEl || !window.mermaid) {
+        console.error('Debug elements not found');
+        return;
+    }
+
+    const mermaidDef = debugInput.value.trim();
+    if (!mermaidDef) {
+        alert('Please enter a Mermaid definition');
+        return;
+    }
+
+    try {
+        console.log('Re-rendering from debug input...');
+        
+        // Clear previous content
+        mermaidGraphEl.innerHTML = '';
+        
+        // Create a div for mermaid rendering
+        const mermaidDiv = document.createElement('div');
+        mermaidDiv.className = 'mermaid';
+        mermaidDiv.style.textAlign = 'center';
+        mermaidDiv.textContent = mermaidDef;
+        mermaidGraphEl.appendChild(mermaidDiv);
+        
+        // Small delay to ensure DOM is ready
+        await new Promise(resolve => setTimeout(resolve, 100));
+        
+        // Render
+        await window.mermaid.run();
+        
+        console.log('Re-render successful');
+    } catch (err) {
+        console.error('Re-render error:', err);
+        mermaidGraphEl.innerHTML = `<div style="color: red; padding: 20px;">
+            <strong>Rendering Error</strong>
+            <p>${err.message || String(err)}</p>
+        </div>`;
+    }
 }
 
 // T011: Mermaid definition generator for project-only graph
@@ -101,6 +151,12 @@ export async function renderGraph(graphResult) {
         
         // Generate Mermaid definition
         const mermaidDef = generateMermaidDefinition(graphResult.nodes, graphResult.edges);
+        
+        // Populate debug textarea
+        const debugInput = document.getElementById('mermaidDebugInput');
+        if (debugInput) {
+            debugInput.value = mermaidDef;
+        }
         
         // Update repository info
         if (repoInfoEl && graphResult.repository) {

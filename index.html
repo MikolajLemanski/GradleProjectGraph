@@ -106,6 +106,18 @@
                     <div id="mermaid-graph"></div>
                 </div>
 
+                <!-- Debug Panel -->
+                <div class="debug-panel">
+                    <details>
+                        <summary>🔧 Debug: View & Edit Mermaid Definition</summary>
+                        <div class="debug-content">
+                            <p class="help-text">Edit the Mermaid definition below and click "Re-render" to test changes</p>
+                            <textarea id="mermaidDebugInput" rows="15"></textarea>
+                            <button id="reRenderBtn" class="secondary-button">🔄 Re-render Graph</button>
+                        </div>
+                    </details>
+                </div>
+
                 <div id="graph-warnings" class="warnings-section" style="display: none;">
                     <h3>⚠️ Warnings</h3>
                     <ul id="warnings-list"></ul>
