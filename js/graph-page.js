@@ -28,16 +28,16 @@ export function generateMermaidDefinition(nodes, edges) {
     
     let mermaidDef = 'flowchart LR\n';
     
-    // Generate node definitions with escaped labels
+    // Generate node definitions
     const nodeIds = new Map();
     nodes.forEach((node, index) => {
         // Create stable node ID from project path
         const nodeId = `node_${sanitizeNodeId(node.projectPath)}`;
         nodeIds.set(node.projectPath, nodeId);
         
-        // Escape label for Mermaid
-        const label = escapeMermaidLabel(node.displayName || node.projectPath);
-        mermaidDef += `  ${nodeId}["${label}"]\n`;
+        // Use label directly (no quotes needed for simple labels)
+        const label = node.displayName || node.projectPath;
+        mermaidDef += `  ${nodeId}[${label}]\n`;
     });
     
     // Generate edges
