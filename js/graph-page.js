@@ -112,11 +112,18 @@ export async function renderGraph(graphResult) {
         
         // Render Mermaid graph
         if (mermaidGraphEl && window.mermaid) {
-            mermaidGraphEl.innerHTML = mermaidDef;
-            mermaidGraphEl.removeAttribute('data-processed');
+            // Use <pre class="mermaid"> wrapper for proper rendering
+            mermaidGraphEl.innerHTML = `<pre class="mermaid">\n${mermaidDef}\n</pre>`;
             
+            // Remove any previous processing markers
+            const preEl = mermaidGraphEl.querySelector('pre');
+            if (preEl) {
+                preEl.removeAttribute('data-processed');
+            }
+            
+            // Render the graph
             await window.mermaid.run({
-                nodes: [mermaidGraphEl]
+                nodes: [preEl]
             });
         }
         

@@ -11,8 +11,8 @@ export function extractProjectDependencies(content, filePath) {
     // Pattern 1: Groovy-style project(':module') or project(":module")
     const groovyPattern1 = /\bproject\s*\(\s*['"]([^'"]+)['"]\s*\)/g;
     
-    // Pattern 2: Groovy-style project(path: ':module') or project(path: ":module")
-    const groovyPattern2 = /\bproject\s*\(\s*path\s*:\s*['"]([^'"]+)['"]\s*\)/g;
+    // Pattern 2: Groovy-style project(path: ':module') or project(path = ":module")
+    const groovyPattern2 = /\bproject\s*\(\s*path\s*[:=]\s*['"]([^'"]+)['"]\s*\)/g;
     
     // Pattern 3: Kotlin-style projects.foo.bar reference
     const kotlinProjectsPattern = /\bprojects\.([a-zA-Z][a-zA-Z0-9_]*(?:\.[a-zA-Z][a-zA-Z0-9_]*)*)\b/g;
@@ -56,8 +56,14 @@ export function extractProjectDependencies(content, filePath) {
     
     // Detect and warn about external/Maven dependencies (for transparency)
     const mavenPattern = /\b(implementation|api|compileOnly|runtimeOnly|testImplementation)\s*\(\s*['"]([^'"]+:[^'"]+:[^'"]+)['"]/g;
+    const versionCatalogPattern = /\b(implementation|api|compileOnly|runtimeOnly|testImplementation)\s*\(\s*(libs\.|compose\.)([a-zA-Z0-9_.]+)\s*\)/g;
+    
     let mavenMatches = 0;
     while ((match = mavenPattern.exec(content)) !== null) {
+        mavenMatches++;
+    }
+    
+    while ((match = versionCatalogPattern.exec(content)) !== null) {
         mavenMatches++;
     }
     
