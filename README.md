@@ -1,18 +1,20 @@
-# GradleProjectGraph
+# Gradle Project Graph Viewer
 
-A simple website to compute and visualize Gradle project dependency graphs from GitHub repositories.
+A modern two-page web application for visualizing Gradle project dependencies from GitHub repositories. Built with vanilla JavaScript and Mermaid.js for clean, interactive dependency graphs.
 
 ## Features
 
-- Analyze Gradle dependencies from any public GitHub repository
-- Supports both `build.gradle` and `build.gradle.kts` files
-- Two-page user flow: repository input page and graph result page
-- Clean, modern interface with responsive design
-- Categorizes dependencies by type (implementation, testImplementation, api, etc.)
+- 🎯 **Two-Page Flow**: Clean separation between input and graph visualization
+- 📊 **Project Dependencies Only**: Focuses on Gradle project-to-project dependencies (excludes external Maven libraries)
+- 🔍 **Smart Discovery**: Recursively finds all `build.gradle` and `build.gradle.kts` files in your repository
+- ✅ **Validation**: Real-time URL validation with helpful error messages
+- 📱 **Responsive Design**: Works on desktop and mobile devices
+- 🎨 **Modern UI**: Built with CSS custom properties and modern design tokens
+- 🔒 **Deterministic**: Same input always produces the same graph output
 
-## Running Locally
+## Quick Start
 
-To run the website locally on your machine:
+### Running Locally
 
 1. Clone this repository:
    ```bash
@@ -20,53 +22,147 @@ To run the website locally on your machine:
    cd GradleProjectGraph
    ```
 
-2. Open `index.html` in your web browser:
-   - **Option 1**: Double-click `index.html` in your file explorer
-   - **Option 2**: Use a local web server (recommended):
-     ```bash
-     # Using Python 3
-     python -m http.server 8000
-     
-     # Using Python 2
-     python -m SimpleHTTPServer 8000
-     
-     # Using Node.js (requires npx)
-     npx serve
-     ```
-   - Then open your browser to `http://localhost:8000`
+2. Start a local web server:
+   ```bash
+   # Using Python 3
+   python3 -m http.server 8080
+   
+   # Or using Node.js
+   npx serve
+   ```
 
-3. Enter a GitHub repository URL (e.g., `https://github.com/spring-projects/spring-boot`) and click "Analyze Dependencies"
+3. Open your browser to `http://localhost:8080`
 
-## Deploying to GitHub Pages
+4. Enter a public GitHub repository URL and click "Analyze Repository"
 
-To deploy this website to GitHub Pages:
+### Example Repositories to Try
 
-1. **Enable GitHub Pages** in your repository:
-   - Go to your repository settings on GitHub
-   - Navigate to **Pages** in the left sidebar
-   - Under **Source**, select the branch you want to deploy (e.g., `main`)
-   - Click **Save**
-
-2. **Access your website**:
-   - Your site will be published at: `https://mikolajlemanski.github.io/GradleProjectGraph/`
-   - It may take a few minutes for the site to be available
-
-3. **Optional - Custom Domain**:
-   - In the Pages settings, you can add a custom domain if you have one
-   - Follow GitHub's instructions for DNS configuration
+- `https://github.com/spring-projects/spring-boot`
+- `https://github.com/gradle/gradle`
+- Any public Gradle multi-project repository
 
 ## Usage
 
-1. On the input page, enter the full GitHub repository URL
-2. Optionally specify a branch (defaults to `main`)
-3. Click "Analyze Dependencies"
-4. On the result page, view the dependency graph organized by dependency type
+1. **Input Page**: Enter a GitHub repository URL
+   - Supports: `https://github.com/owner/repo`
+   - Optional branch: `https://github.com/owner/repo/tree/branch-name`
+   - Real-time validation shows if URL is valid
+
+2. **Analysis**: Click "Analyze Repository"
+   - App fetches repository metadata
+   - Discovers all Gradle build files
+   - Parses project dependencies (Groovy and Kotlin DSL)
+
+3. **Graph Page**: View the dependency graph
+   - Mermaid flowchart showing project relationships
+   - Legend explaining node and edge types
+   - Warnings for any parsing issues
+   - Metadata showing projects found and commit SHA
+
+## Supported Patterns
+
+The parser extracts project dependencies from these patterns:
+
+### Groovy DSL
+```groovy
+dependencies {
+    implementation project(':core')
+    api project(path: ':shared')
+}
+```
+
+### Kotlin DSL
+```kotlin
+dependencies {
+    implementation(project(":core"))
+    api(projects.shared.utils)
+}
+```
 
 ## Limitations
 
-- Only works with public GitHub repositories
-- Parses dependencies from root `build.gradle` or `build.gradle.kts` files
-- GitHub API rate limits apply (60 requests per hour for unauthenticated requests)
+### GitHub API
+- **Public repositories only**: Private repositories are not accessible
+- **Rate limits**: 60 requests/hour without authentication, 5000/hour when authenticated
+- **Large repositories**: Very large repositories (>1000 files) may be truncated by GitHub API
+
+### Parsing
+- **Project dependencies only**: External Maven/library dependencies are excluded from the graph
+- **Static parsing**: Does not execute Gradle; uses pattern matching on source files
+- **Supported files**: Only `build.gradle`, `build.gradle.kts`, `settings.gradle`, `settings.gradle.kts`
+
+### Browser Requirements
+- **Modern browsers**: Requires ES2020+ support (Chrome 80+, Firefox 74+, Safari 13.1+, Edge 80+)
+- **JavaScript enabled**: Application requires JavaScript to function
+
+### Browser Requirements
+- **Modern browsers**: Requires ES2020+ support (Chrome 80+, Firefox 74+, Safari 13.1+, Edge 80+)
+- **JavaScript enabled**: Application requires JavaScript to function
+
+## How It Works
+
+1. **URL Normalization**: Validates and parses GitHub repository URLs
+2. **Metadata Fetch**: Retrieves repository information and resolves branch to commit SHA
+3. **Tree Discovery**: Recursively lists all files in the repository
+4. **File Filtering**: Identifies Gradle build files
+5. **Content Fetch**: Downloads Gradle file content at pinned commit SHA
+6. **Dependency Extraction**: Parses project dependencies using regex patterns
+7. **Graph Canonicalization**: Deduplicates and sorts nodes/edges for deterministic output
+8. **Mermaid Rendering**: Generates and displays interactive flowchart
+
+## Project Structure
+
+```
+.
+├── index.html              # Two-page HTML shell
+├── style.css               # Modern CSS with design tokens
+├── js/
+│   ├── input-page.js       # Input validation and analysis orchestration
+│   ├── graph-page.js       # Graph rendering and Mermaid integration
+│   ├── github-client.js    # GitHub REST API client
+│   └── gradle-parser.js    # Gradle dependency extraction
+├── tests/
+│   ├── integration/        # Integration test placeholders
+│   └── parser/             # Parser unit test placeholders
+└── specs/
+    └── 001-gradle-graph-viewer/  # Feature specifications
+```
+
+## Deploying to GitHub Pages
+
+1. **Enable GitHub Pages** in your repository settings:
+   - Navigate to Settings → Pages
+   - Set Source to your main branch
+   - Click Save
+
+2. **Access your website**:
+   - URL: `https://yourusername.github.io/GradleProjectGraph/`
+   - May take a few minutes to deploy
+
+## Troubleshooting
+
+### "Repository Not Available"
+- Verify the repository is public
+- Check the URL format is correct
+- Ensure the repository exists
+
+### "Rate Limit Exceeded"
+- Wait 60 minutes for rate limit reset
+- Authenticate with GitHub for higher limits (not currently supported in this version)
+
+### "No Gradle Files Found"
+- Verify the repository contains Gradle build files
+- Check if files are in standard locations
+- This tool only works with Gradle projects
+
+### Graph Not Rendering
+- Check browser console for errors
+- Verify Mermaid.js loaded successfully
+- Try refreshing the page
+
+## Contributing
+
+This is a learning project. Feel free to fork and experiment!
 
 ## License
 

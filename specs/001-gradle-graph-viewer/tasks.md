@@ -17,10 +17,10 @@
 
 **Purpose**: Initialize static app structure and two-page shell.
 
-- [ ] T001 Create JavaScript module directory structure in js/ and tests/ with placeholder files in js/input-page.js, js/graph-page.js, js/github-client.js, and js/gradle-parser.js
-- [ ] T002 Update static two-page HTML shell with input and graph sections in index.html
-- [ ] T003 [P] Add base modern layout and shared design tokens for both pages in style.css
-- [ ] T004 [P] Add Mermaid.js script loading and bootstrap hook in index.html
+- [X] T001 Create JavaScript module directory structure in js/ and tests/ with placeholder files in js/input-page.js, js/graph-page.js, js/github-client.js, and js/gradle-parser.js
+- [X] T002 Update static two-page HTML shell with input and graph sections in index.html
+- [X] T003 [P] Add base modern layout and shared design tokens for both pages in style.css
+- [X] T004 [P] Add Mermaid.js script loading and bootstrap hook in index.html
 
 ---
 
@@ -30,14 +30,14 @@
 
 **⚠️ CRITICAL**: Complete this phase before starting user stories.
 
-- [ ] T005 Implement repository URL normalization/parsing utility in js/input-page.js
-- [ ] T006 [P] Implement GitHub repository metadata and branch/ref resolution client functions in js/github-client.js
-- [ ] T007 [P] Implement recursive tree fetch and Gradle file discovery functions in js/github-client.js
-- [ ] T008 Implement pinned-SHA file content fetch and decode flow in js/github-client.js
-- [ ] T009 [P] Implement Gradle project dependency extraction for Groovy/Kotlin patterns in js/gradle-parser.js
-- [ ] T010 Implement graph canonicalization and deterministic sort/dedup functions in js/gradle-parser.js
-- [ ] T011 Implement Mermaid definition generator for project-only graph output in js/graph-page.js
-- [ ] T012 Implement shared error-code mapping and user message formatting in js/input-page.js
+- [X] T005 Implement repository URL normalization/parsing utility in js/input-page.js
+- [X] T006 [P] Implement GitHub repository metadata and branch/ref resolution client functions in js/github-client.js
+- [X] T007 [P] Implement recursive tree fetch and Gradle file discovery functions in js/github-client.js
+- [X] T008 Implement pinned-SHA file content fetch and decode flow in js/github-client.js
+- [X] T009 [P] Implement Gradle project dependency extraction for Groovy/Kotlin patterns in js/gradle-parser.js
+- [X] T010 Implement graph canonicalization and deterministic sort/dedup functions in js/gradle-parser.js
+- [X] T011 Implement Mermaid definition generator for project-only graph output in js/graph-page.js
+- [X] T012 Implement shared error-code mapping and user message formatting in js/input-page.js
 
 **Checkpoint**: Foundation ready — user story implementation can proceed.
 
@@ -51,12 +51,12 @@
 
 ### Implementation for User Story 1
 
-- [ ] T013 [US1] Wire analyze action from input submit to analysis pipeline in js/input-page.js
-- [ ] T014 [US1] Implement orchestrated GitHub fetch sequence (repo -> ref -> tree -> files) in js/github-client.js
-- [ ] T015 [US1] Build project node/edge graph result assembly from parsed files in js/gradle-parser.js
-- [ ] T016 [US1] Render graph page state, legend, and Mermaid output in js/graph-page.js
-- [ ] T017 [US1] Implement page transition state management between input and graph sections in js/input-page.js
-- [ ] T018 [US1] Exclude Maven/external dependencies and surface parse warnings in js/gradle-parser.js
+- [X] T013 [US1] Wire analyze action from input submit to analysis pipeline in js/input-page.js
+- [X] T014 [US1] Implement orchestrated GitHub fetch sequence (repo -> ref -> tree -> files) in js/github-client.js
+- [X] T015 [US1] Build project node/edge graph result assembly from parsed files in js/gradle-parser.js
+- [X] T016 [US1] Render graph page state, legend, and Mermaid output in js/graph-page.js
+- [X] T017 [US1] Implement page transition state management between input and graph sections in js/input-page.js
+- [X] T018 [US1] Exclude Maven/external dependencies and surface parse warnings in js/gradle-parser.js
 
 **Checkpoint**: User Story 1 is independently functional and demo-ready as MVP.
 
@@ -70,12 +70,12 @@
 
 ### Implementation for User Story 2
 
-- [ ] T019 [US2] Implement client-side URL format checks and non-GitHub rejection on submit in js/input-page.js
-- [ ] T020 [US2] Add inline validation UI states and corrective helper text on input page in index.html
-- [ ] T021 [US2] Style validation statuses (error, warning, success, loading) for input workflow in style.css
-- [ ] T022 [US2] Implement repository availability validation using GitHub metadata endpoint in js/github-client.js
-- [ ] T023 [US2] Implement failure-state handling for rate-limit, network, and missing-repository responses in js/input-page.js
-- [ ] T024 [US2] Prevent graph-page transition on invalid or failed validation states in js/input-page.js
+- [X] T019 [US2] Implement client-side URL format checks and non-GitHub rejection on submit in js/input-page.js
+- [X] T020 [US2] Add inline validation UI states and corrective helper text on input page in index.html
+- [X] T021 [US2] Style validation statuses (error, warning, success, loading) for input workflow in style.css
+- [X] T022 [US2] Implement repository availability validation using GitHub metadata endpoint in js/github-client.js
+- [X] T023 [US2] Implement failure-state handling for rate-limit, network, and missing-repository responses in js/input-page.js
+- [X] T024 [US2] Prevent graph-page transition on invalid or failed validation states in js/input-page.js
 
 **Checkpoint**: User Story 2 is independently testable and prevents invalid analysis attempts.
 
@@ -89,11 +89,11 @@
 
 ### Implementation for User Story 3
 
-- [ ] T025 [US3] Implement modern visual hierarchy and spacing system for both pages in style.css
-- [ ] T026 [US3] Improve graph readability with node/legend container presentation in style.css
-- [ ] T027 [US3] Add responsive layout breakpoints for mobile and desktop in style.css
-- [ ] T028 [US3] Add empty/loading/error/success visual states for graph area in index.html
-- [ ] T029 [US3] Implement graph-page status messaging and progressive rendering feedback in js/graph-page.js
+- [X] T025 [US3] Implement modern visual hierarchy and spacing system for both pages in style.css
+- [X] T026 [US3] Improve graph readability with node/legend container presentation in style.css
+- [X] T027 [US3] Add responsive layout breakpoints for mobile and desktop in style.css
+- [X] T028 [US3] Add empty/loading/error/success visual states for graph area in index.html
+- [X] T029 [US3] Implement graph-page status messaging and progressive rendering feedback in js/graph-page.js
 
 **Checkpoint**: User Story 3 is independently functional with improved usability and visual quality.
 
@@ -103,10 +103,10 @@
 
 **Purpose**: Final hardening across all user stories.
 
-- [ ] T030 [P] Add usage and limitation notes for public GitHub/rate-limit behavior in README.md
-- [ ] T031 Run quickstart scenario verification and document outcomes in specs/001-gradle-graph-viewer/quickstart.md
-- [ ] T032 [P] Refine edge-case messaging copy consistency across input and graph pages in js/input-page.js
-- [ ] T033 [P] Refine edge-case messaging copy consistency across input and graph pages in js/graph-page.js
+- [X] T030 [P] Add usage and limitation notes for public GitHub/rate-limit behavior in README.md
+- [X] T031 Run quickstart scenario verification and document outcomes in specs/001-gradle-graph-viewer/quickstart.md
+- [X] T032 [P] Refine edge-case messaging copy consistency across input and graph pages in js/input-page.js
+- [X] T033 [P] Refine edge-case messaging copy consistency across input and graph pages in js/graph-page.js
 
 ---
 
