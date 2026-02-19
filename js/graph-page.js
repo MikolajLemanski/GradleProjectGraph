@@ -112,19 +112,40 @@ export async function renderGraph(graphResult) {
         
         // Render Mermaid graph
         if (mermaidGraphEl && window.mermaid) {
-            // Use <pre class="mermaid"> wrapper for proper rendering
-            mermaidGraphEl.innerHTML = `<pre class="mermaid">\n${mermaidDef}\n</pre>`;
-            
-            // Remove any previous processing markers
-            const preEl = mermaidGraphEl.querySelector('pre');
-            if (preEl) {
-                preEl.removeAttribute('data-processed');
+            try {
+                console.log('Rendering Mermaid graph...');
+                console.log('Graph data - Nodes:', graphResult.nodes.length, 'Edges:', graphResult.edges?.length || 0);
+                
+                // Clear previous content
+                mermaidGraphEl.innerHTML = '';
+                
+                // Create a div for mermaid rendering
+                const mermaidDiv = document.createElement('div');
+                mermaidDiv.className = 'mermaid';
+                mermaidDiv.style.textAlign = 'center';
+                mermaidDiv.textContent = mermaidDef;
+                mermaidGraphEl.appendChild(mermaidDiv);
+                
+                console.log('Mermaid def:', mermaidDef);
+                
+                // Small delay to ensure DOM is ready
+                await new Promise(resolve => setTimeout(resolve, 100));
+                
+                // Render - use mermaid.run() which auto-detects .mermaid elements
+                await window.mermaid.run();
+                
+                console.log('Mermaid graph rendered successfully');
+            } catch (err) {
+                console.error('Mermaid rendering error:', err);
+                mermaidGraphEl.innerHTML = `<div style="color: red; padding: 20px;">
+                    <strong>Graph Rendering Error</strong>
+                    <p>${escapeHtml(err.message || String(err))}</p>
+                    <details>
+                        <summary>Mermaid Definition</summary>
+                        <pre style="background: #f5f5f5; padding: 10px; overflow-x: auto;">${escapeHtml(mermaidDef)}</pre>
+                    </details>
+                </div>`;
             }
-            
-            // Render the graph
-            await window.mermaid.run({
-                nodes: [preEl]
-            });
         }
         
         // Show warnings if any

@@ -385,18 +385,26 @@ header p {
     border-radius: var(--radius-md);
     margin-bottom: var(--space-xl);
     overflow-x: auto;
+    min-height: 400px;
 }
 
 #mermaid-graph {
+    min-height: 300px;
+    width: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: flex-start;
+    padding: var(--space-lg);
+}
+
+#mermaid-graph .mermaid {
+    width: 100%;
     min-height: 200px;
 }
 
-#mermaid-graph pre.mermaid {
-    background: transparent;
-    border: none;
-    padding: 0;
-    margin: 0;
-    text-align: center;
+#mermaid-graph svg {
+    max-width: 100%;
+    height: auto;
 }
 
 .warnings-section {
