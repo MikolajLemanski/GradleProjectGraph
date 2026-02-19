@@ -55,6 +55,17 @@
                 </div>
 
                 <div id="input-error" class="error-state" style="display: none;"></div>
+
+                <!-- Health Check Section -->
+                <div class="health-check-section">
+                    <hr class="section-divider">
+                    <h3>System Health Check</h3>
+                    <p class="help-text">Run tests to verify all components are working correctly</p>
+                    <button id="runTestsBtn" class="secondary-button">
+                        🔍 Run Tests
+                    </button>
+                    <div id="test-results" class="test-results" style="display: none;"></div>
+                </div>
             </div>
         </div>
     </section>
@@ -114,11 +125,39 @@
     <script type="module">
         import { initInputPage } from './js/input-page.js';
         import { initGraphPage } from './js/graph-page.js';
+        import { runAllTests, displayTestResults } from './js/test-orchestrator.js';
 
         // Initialize pages on load
         document.addEventListener('DOMContentLoaded', () => {
             initInputPage();
             initGraphPage();
+
+            // Wire up test runner button
+            const runTestsBtn = document.getElementById('runTestsBtn');
+            if (runTestsBtn) {
+                runTestsBtn.addEventListener('click', async () => {
+                    runTestsBtn.disabled = true;
+                    runTestsBtn.textContent = '⏳ Running tests...';
+                    
+                    try {
+                        const results = await runAllTests();
+                        displayTestResults(results);
+                    } catch (error) {
+                        console.error('Test execution failed:', error);
+                        const resultsDiv = document.getElementById('test-results');
+                        if (resultsDiv) {
+                            resultsDiv.innerHTML = `<div class="test-summary failure">
+                                <h3>✗ Test Execution Failed</h3>
+                                <p>${error.message || 'Unknown error'}</p>
+                            </div>`;
+                            resultsDiv.style.display = 'block';
+                        }
+                    } finally {
+                        runTestsBtn.disabled = false;
+                        runTestsBtn.textContent = '🔍 Run Tests';
+                    }
+                });
+            }
         });
     </script>
 </body>
