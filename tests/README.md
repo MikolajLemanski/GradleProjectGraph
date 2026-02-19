@@ -32,6 +32,21 @@ Browser-based health check tests for the Gradle Project Graph Viewer.
 - ✓ Validate mock API responses
 - ✓ Error handling
 
+### Mermaid Graph Tests
+- ✓ Generate Mermaid flowchart syntax
+- ✓ Handle empty graphs
+- ✓ Escape special characters
+- ✓ Complex multi-module structures
+
+### End-to-End Tests (NEW!)
+- ✓ Full flow: Parse → Build Graph → Generate Mermaid
+- ✓ Validate Mermaid syntax correctness
+- ✓ Test node ID sanitization
+- ✓ Verify edge connections use valid IDs
+- ✓ Handle root projects
+- ✓ Bracket balancing and quote escaping
+- ✓ Debug output for Mermaid definitions
+
 ## Adding New Tests
 
 ```javascript

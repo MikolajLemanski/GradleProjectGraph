@@ -9,6 +9,7 @@ import { globalRunner } from './test-runner.js';
 import '../tests/parser/gradle-parser.test.js';
 import '../tests/integration/github-client.test.js';
 import '../tests/integration/mermaid-graph.test.js';
+import '../tests/integration/e2e-graph.test.js';
 
 /**
  * Run all tests and return results
