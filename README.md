@@ -6,6 +6,7 @@ A simple website to compute and visualize Gradle project dependency graphs from 
 
 - Analyze Gradle dependencies from any public GitHub repository
 - Supports both `build.gradle` and `build.gradle.kts` files
+- Two-page user flow: repository input page and graph result page
 - Clean, modern interface with responsive design
 - Categorizes dependencies by type (implementation, testImplementation, api, etc.)
 
@@ -56,10 +57,10 @@ To deploy this website to GitHub Pages:
 
 ## Usage
 
-1. Enter the full GitHub repository URL in the input field
+1. On the input page, enter the full GitHub repository URL
 2. Optionally specify a branch (defaults to `main`)
-3. Click "Analyze Dependencies" 
-4. View the dependency graph organized by dependency type
+3. Click "Analyze Dependencies"
+4. On the result page, view the dependency graph organized by dependency type
 
 ## Limitations
 

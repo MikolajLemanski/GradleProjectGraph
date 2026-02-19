@@ -11,6 +11,11 @@
   IMPORTANT: User stories should be PRIORITIZED as user journeys ordered by importance.
   Each user story/journey must be INDEPENDENTLY TESTABLE - meaning if you implement just ONE of them,
   you should still have a viable MVP (Minimum Viable Product) that delivers value.
+
+  Constitution alignment for this project:
+  - P1 MUST cover the full two-page user journey (repo input -> graph view).
+  - Stories MUST preserve analysis source constraints (public GitHub + Gradle files).
+  - Stories MUST define failure-state behavior and user messaging.
   
   Assign priorities (P1, P2, P3, etc.) to each story, where P1 is the most critical.
   Think of each story as a standalone slice of functionality that can be:
@@ -72,8 +77,10 @@
   Fill them out with the right edge cases.
 -->
 
-- What happens when [boundary condition]?
-- How does system handle [error scenario]?
+- What happens when repository URL is invalid or not public?
+- How does the system handle missing `build.gradle` and `build.gradle.kts` files?
+- How does the system behave on GitHub API rate-limit or network failure?
+- How does the system ensure deterministic output for repeated runs on same input?
 
 ## Requirements *(mandatory)*
 
@@ -84,11 +91,15 @@
 
 ### Functional Requirements
 
-- **FR-001**: System MUST [specific capability, e.g., "allow users to create accounts"]
-- **FR-002**: System MUST [specific capability, e.g., "validate email addresses"]  
-- **FR-003**: Users MUST be able to [key interaction, e.g., "reset their password"]
-- **FR-004**: System MUST [data requirement, e.g., "persist user preferences"]
-- **FR-005**: System MUST [behavior, e.g., "log all security events"]
+- **FR-001**: System MUST provide exactly two user-facing pages: repository input
+  and computed dependency graph result.
+- **FR-002**: System MUST validate GitHub repository input before analysis.
+- **FR-003**: System MUST analyze dependencies from public GitHub repository
+  Gradle files (`build.gradle` or `build.gradle.kts`).
+- **FR-004**: System MUST produce deterministic graph results for identical
+  repository/ref/source inputs.
+- **FR-005**: System MUST show clear, actionable error messaging for invalid
+  input, missing Gradle files, and API/network/rate-limit failures.
 
 *Example of marking unclear requirements:*
 
@@ -109,7 +120,11 @@
 
 ### Measurable Outcomes
 
-- **SC-001**: [Measurable metric, e.g., "Users can complete account creation in under 2 minutes"]
-- **SC-002**: [Measurable metric, e.g., "System handles 1000 concurrent users without degradation"]
-- **SC-003**: [User satisfaction metric, e.g., "90% of users successfully complete primary task on first attempt"]
-- **SC-004**: [Business metric, e.g., "Reduce support tickets related to [X] by 50%"]
+- **SC-001**: A user can complete the full two-page flow (input -> graph)
+  without documentation in under 2 minutes.
+- **SC-002**: For identical repository/ref input, repeated analyses produce the
+  same dependency categories and graph structure.
+- **SC-003**: 95% of invalid-input and known external failure paths display
+  explicit, actionable error messages.
+- **SC-004**: The graph page remains usable on current desktop and mobile
+  browsers without layout breakage in primary flow.

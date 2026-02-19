@@ -31,7 +31,13 @@
 
 *GATE: Must pass before Phase 0 research. Re-check after Phase 1 design.*
 
-[Gates determined based on constitution file]
+- [ ] Two-page journey preserved: input page + graph result page only
+- [ ] Data source constraints preserved: public GitHub repositories + Gradle
+  files (`build.gradle` / `build.gradle.kts`)
+- [ ] Deterministic graph computation guaranteed for identical inputs
+- [ ] Validation and failure states specified (invalid URL, missing Gradle file,
+  network/rate-limit/API errors)
+- [ ] Architecture remains static/minimal, or complexity is justified below
 
 ## Project Structure
 
@@ -56,30 +62,30 @@ specs/[###-feature]/
 -->
 
 ```text
-# [REMOVE IF UNUSED] Option 1: Single project (DEFAULT)
-src/
-├── models/
-├── services/
-├── cli/
-└── lib/
+# [REMOVE IF UNUSED] Option 1: Static web app (DEFAULT)
+index.html
+style.css
+js/
+├── input-page.js
+├── graph-page.js
+├── github-client.js
+└── gradle-parser.js
 
 tests/
-├── contract/
 ├── integration/
-└── unit/
+└── parser/
 
-# [REMOVE IF UNUSED] Option 2: Web application (when "frontend" + "backend" detected)
+# [REMOVE IF UNUSED] Option 2: Split web app (frontend + backend when needed)
 backend/
 ├── src/
-│   ├── models/
 │   ├── services/
 │   └── api/
 └── tests/
 
 frontend/
 ├── src/
-│   ├── components/
 │   ├── pages/
+│   ├── components/
 │   └── services/
 └── tests/
 
