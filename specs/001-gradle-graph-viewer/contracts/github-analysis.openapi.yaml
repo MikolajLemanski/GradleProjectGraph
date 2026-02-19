@@ -1,0 +1,182 @@
+openapi: 3.1.0
+info:
+  title: Gradle Graph Viewer External API Contract
+  version: 1.0.0
+  description: |
+    Contract for browser-side interactions with GitHub REST API required to
+    validate repositories, discover Gradle files, and fetch file content for
+    project-dependency graph generation.
+servers:
+  - url: https://api.github.com
+    description: GitHub REST API
+paths:
+  /repos/{owner}/{repo}:
+    get:
+      summary: Validate public repository availability
+      operationId: getRepository
+      parameters:
+        - $ref: '#/components/parameters/Owner'
+        - $ref: '#/components/parameters/Repo'
+      responses:
+        '200':
+          description: Repository metadata resolved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/RepositoryMetadata'
+        '404':
+          description: Repository not found or inaccessible
+        '403':
+          description: Forbidden or rate-limited
+  /repos/{owner}/{repo}/git/ref/heads/{branch}:
+    get:
+      summary: Resolve branch name to commit SHA
+      operationId: getBranchRef
+      parameters:
+        - $ref: '#/components/parameters/Owner'
+        - $ref: '#/components/parameters/Repo'
+        - name: branch
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Branch reference resolved
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/GitRefResponse'
+        '404':
+          description: Branch not found
+        '403':
+          description: Forbidden or rate-limited
+  /repos/{owner}/{repo}/git/trees/{tree_sha}:
+    get:
+      summary: Recursively list repository tree for Gradle file discovery
+      operationId: getRecursiveTree
+      parameters:
+        - $ref: '#/components/parameters/Owner'
+        - $ref: '#/components/parameters/Repo'
+        - name: tree_sha
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: recursive
+          in: query
+          required: true
+          schema:
+            type: integer
+            enum: [1]
+      responses:
+        '200':
+          description: Tree entries returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TreeResponse'
+        '404':
+          description: Tree or repository not found
+        '403':
+          description: Forbidden or rate-limited
+  /repos/{owner}/{repo}/contents/{path}:
+    get:
+      summary: Fetch Gradle file content at pinned ref
+      operationId: getFileContent
+      parameters:
+        - $ref: '#/components/parameters/Owner'
+        - $ref: '#/components/parameters/Repo'
+        - name: path
+          in: path
+          required: true
+          schema:
+            type: string
+        - name: ref
+          in: query
+          required: true
+          schema:
+            type: string
+            description: Pinned commit SHA for deterministic reads
+      responses:
+        '200':
+          description: File metadata and base64 content returned
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ContentResponse'
+        '404':
+          description: File not found at ref
+        '403':
+          description: Forbidden or rate-limited
+components:
+  parameters:
+    Owner:
+      name: owner
+      in: path
+      required: true
+      schema:
+        type: string
+    Repo:
+      name: repo
+      in: path
+      required: true
+      schema:
+        type: string
+  schemas:
+    RepositoryMetadata:
+      type: object
+      required: [full_name, default_branch, private]
+      properties:
+        full_name:
+          type: string
+        default_branch:
+          type: string
+        private:
+          type: boolean
+    GitRefResponse:
+      type: object
+      required: [object]
+      properties:
+        object:
+          type: object
+          required: [sha, type]
+          properties:
+            sha:
+              type: string
+            type:
+              type: string
+              enum: [commit]
+    TreeResponse:
+      type: object
+      required: [sha, tree]
+      properties:
+        sha:
+          type: string
+        truncated:
+          type: boolean
+        tree:
+          type: array
+          items:
+            type: object
+            required: [path, type]
+            properties:
+              path:
+                type: string
+              type:
+                type: string
+                enum: [blob, tree]
+    ContentResponse:
+      type: object
+      required: [type, encoding, content, path]
+      properties:
+        type:
+          type: string
+          enum: [file]
+        encoding:
+          type: string
+          enum: [base64]
+        content:
+          type: string
+        path:
+          type: string
