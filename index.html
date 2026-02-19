@@ -67,34 +67,6 @@
                     </button>
                     <div id="test-results" class="test-results" style="display: none;"></div>
                 </div>
-
-                <!-- Mermaid Sandbox Section -->
-                <div class="mermaid-sandbox-section">
-                    <hr class="section-divider">
-                    <h3>Mermaid Graph Sandbox</h3>
-                    <p class="help-text">Test Mermaid graph rendering by pasting graph definitions below</p>
-                    
-                    <div class="form-group">
-                        <label for="mermaidInput">Mermaid Definition:</label>
-                        <textarea 
-                            id="mermaidInput" 
-                            rows="10"
-                            placeholder="Paste your Mermaid graph definition here..."
-                        >flowchart LR
-    A-->B
-    B-->C
-    C-->D</textarea>
-                    </div>
-
-                    <button id="renderGraphBtn" class="secondary-button">
-                        🎨 Render Graph
-                    </button>
-
-                    <div id="sandbox-preview" class="sandbox-preview" style="display: none;">
-                        <h4>Preview:</h4>
-                        <div id="sandbox-graph"></div>
-                    </div>
-                </div>
             </div>
         </div>
     </section>
@@ -184,58 +156,6 @@
                     } finally {
                         runTestsBtn.disabled = false;
                         runTestsBtn.textContent = '🔍 Run Tests';
-                    }
-                });
-            }
-
-            // Wire up Mermaid sandbox button
-            const renderGraphBtn = document.getElementById('renderGraphBtn');
-            const mermaidInput = document.getElementById('mermaidInput');
-            const sandboxPreview = document.getElementById('sandbox-preview');
-            const sandboxGraph = document.getElementById('sandbox-graph');
-
-            if (renderGraphBtn && mermaidInput && sandboxGraph && window.mermaid) {
-                renderGraphBtn.addEventListener('click', async () => {
-                    const mermaidCode = mermaidInput.value.trim();
-                    
-                    if (!mermaidCode) {
-                        alert('Please enter a Mermaid graph definition');
-                        return;
-                    }
-
-                    try {
-                        renderGraphBtn.disabled = true;
-                        renderGraphBtn.textContent = '⏳ Rendering...';
-                        
-                        // Clear previous graph
-                        sandboxGraph.innerHTML = '';
-                        
-                        // Create mermaid div
-                        const mermaidDiv = document.createElement('div');
-                        mermaidDiv.className = 'mermaid';
-                        mermaidDiv.textContent = mermaidCode;
-                        sandboxGraph.appendChild(mermaidDiv);
-                        
-                        // Show preview
-                        sandboxPreview.style.display = 'block';
-                        
-                        // Small delay for DOM
-                        await new Promise(resolve => setTimeout(resolve, 50));
-                        
-                        // Render
-                        await window.mermaid.run();
-                        
-                        console.log('Sandbox graph rendered successfully');
-                    } catch (error) {
-                        console.error('Sandbox rendering error:', error);
-                        sandboxGraph.innerHTML = `<div style="color: red; padding: 20px;">
-                            <strong>Rendering Error</strong>
-                            <p>${error.message || String(error)}</p>
-                        </div>`;
-                        sandboxPreview.style.display = 'block';
-                    } finally {
-                        renderGraphBtn.disabled = false;
-                        renderGraphBtn.textContent = '🎨 Render Graph';
                     }
                 });
             }
