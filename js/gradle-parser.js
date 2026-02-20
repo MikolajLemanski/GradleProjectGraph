@@ -180,11 +180,18 @@ export function buildProjectGraph(parsedFiles) {
         }
     });
     
-    // Convert projects set to nodes array
-    const nodes = Array.from(projectsSet).map(path => ({ projectPath: path }));
+    // Convert projects set to nodes array, excluding root project
+    const nodes = Array.from(projectsSet)
+        .filter(path => path !== ':')
+        .map(path => ({ projectPath: path }));
+    
+    // Filter out edges involving root project
+    const filteredEdges = edges.filter(edge => 
+        edge.fromProjectPath !== ':' && edge.toProjectPath !== ':'
+    );
     
     // Canonicalize the graph
-    const canonical = canonicalizeGraph(nodes, edges);
+    const canonical = canonicalizeGraph(nodes, filteredEdges);
     
     return {
         nodes: canonical.nodes,

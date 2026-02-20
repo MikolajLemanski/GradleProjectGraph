@@ -47,18 +47,16 @@ async function handleReRender() {
         // Clear previous content
         mermaidGraphEl.innerHTML = '';
         
-        // Create a div for mermaid rendering
+        // Create a unique ID for this render
+        const uniqueId = `mermaid-debug-${Date.now()}`;
         const mermaidDiv = document.createElement('div');
+        mermaidDiv.id = uniqueId;
         mermaidDiv.className = 'mermaid';
-        mermaidDiv.style.textAlign = 'center';
-        mermaidDiv.textContent = mermaidDef;
         mermaidGraphEl.appendChild(mermaidDiv);
         
-        // Small delay to ensure DOM is ready
-        await new Promise(resolve => setTimeout(resolve, 100));
-        
-        // Render
-        await window.mermaid.run();
+        // Render with explicit element reference
+        const { svg } = await window.mermaid.render(uniqueId + '-svg', mermaidDef);
+        mermaidDiv.innerHTML = svg;
         
         console.log('Re-render successful');
     } catch (err) {
@@ -175,20 +173,19 @@ export async function renderGraph(graphResult) {
                 // Clear previous content
                 mermaidGraphEl.innerHTML = '';
                 
-                // Create a div for mermaid rendering
+                // Create a unique ID for this render to avoid conflicts
+                const uniqueId = `mermaid-${Date.now()}`;
                 const mermaidDiv = document.createElement('div');
+                mermaidDiv.id = uniqueId;
                 mermaidDiv.className = 'mermaid';
-                mermaidDiv.style.textAlign = 'center';
                 mermaidDiv.textContent = mermaidDef;
                 mermaidGraphEl.appendChild(mermaidDiv);
                 
                 console.log('Mermaid def:', mermaidDef);
                 
-                // Small delay to ensure DOM is ready
-                await new Promise(resolve => setTimeout(resolve, 100));
-                
-                // Render - use mermaid.run() which auto-detects .mermaid elements
-                await window.mermaid.run();
+                // Render with explicit element reference
+                const { svg } = await window.mermaid.render(uniqueId + '-svg', mermaidDef);
+                mermaidDiv.innerHTML = svg;
                 
                 console.log('Mermaid graph rendered successfully');
             } catch (err) {
