@@ -1,0 +1,21 @@
+# OpenAPI fragment: GitHub token usage
+openapi: 3.0.0
+info:
+  title: GitHub Auth (client-side)
+  version: 1.0.0
+
+paths: {}
+
+components:
+  parameters:
+    GitHubAuthToken:
+      name: Authorization
+      in: header
+      description: >-
+        Optional GitHub Personal Access Token header using the `token <PAT>` scheme.
+        Example: `Authorization: token OAUTH_TOKEN`. If present, requests will be
+        authenticated and may access private repositories if the token has the
+        required `repo` scope.
+      required: false
+      schema:
+        type: string
