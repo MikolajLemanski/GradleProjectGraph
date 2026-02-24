@@ -3,6 +3,8 @@
  * Handles repository URL input, validation, and analysis initiation
  */
 
+import { setSessionToken, clearSessionToken, getSessionToken, validateSessionToken } from './github-client.js';
+
 // Page state
 let currentPage = 'input';
 
@@ -11,6 +13,11 @@ export function initInputPage() {
     console.log('Input page initialized');
     const analyzeBtn = document.getElementById('analyzeBtn');
     const repoUrlInput = document.getElementById('repoUrl');
+    const githubTokenInput = document.getElementById('githubTokenInput');
+    const setTokenBtn = document.getElementById('setTokenBtn');
+    const clearTokenBtn = document.getElementById('clearTokenBtn');
+    const tokenStatus = document.getElementById('token-status');
+    const tokenMessage = document.getElementById('token-message');
     
     if (analyzeBtn) {
         analyzeBtn.addEventListener('click', handleAnalyzeClick);
@@ -19,6 +26,58 @@ export function initInputPage() {
     if (repoUrlInput) {
         repoUrlInput.addEventListener('input', handleUrlInput);
         repoUrlInput.addEventListener('blur', handleUrlBlur);
+    }
+
+    // Initialize token UI
+    if (setTokenBtn && githubTokenInput) {
+        setTokenBtn.addEventListener('click', async () => {
+            const token = githubTokenInput.value.trim();
+            if (!token) {
+                if (tokenMessage) {
+                    tokenMessage.textContent = 'Please enter a token to set.';
+                    tokenMessage.className = 'validation-message error';
+                }
+                return;
+            }
+
+            // Set token in client and validate
+            setSessionToken(token);
+            if (tokenMessage) {
+                tokenMessage.textContent = 'Validating token...';
+                tokenMessage.className = 'validation-message';
+            }
+
+            const result = await validateSessionToken();
+            if (result.valid) {
+                if (tokenStatus) tokenStatus.textContent = `Authenticated as ${result.username}`;
+                if (tokenMessage) {
+                    tokenMessage.textContent = 'Token accepted. You can access private repositories this session.';
+                    tokenMessage.className = 'validation-message success';
+                }
+                // Clear input field for safety
+                githubTokenInput.value = '';
+            } else {
+                // Invalid token — clear and report
+                clearSessionToken();
+                if (tokenStatus) tokenStatus.textContent = 'Not authenticated';
+                if (tokenMessage) {
+                    tokenMessage.textContent = 'Invalid or expired token. Please re-enter a valid Personal Access Token.';
+                    tokenMessage.className = 'validation-message error';
+                }
+            }
+        });
+    }
+
+    if (clearTokenBtn) {
+        clearTokenBtn.addEventListener('click', () => {
+            clearSessionToken();
+            if (tokenStatus) tokenStatus.textContent = 'Not authenticated';
+            if (tokenMessage) {
+                tokenMessage.textContent = 'Token removed for this session.';
+                tokenMessage.className = 'validation-message';
+            }
+            if (githubTokenInput) githubTokenInput.value = '';
+        });
     }
 }
 

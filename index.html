@@ -45,6 +45,25 @@
                     <div id="validation-message" class="validation-message"></div>
                 </div>
 
+                <div class="form-group">
+                    <label for="githubTokenInput">GitHub Personal Access Token (optional):</label>
+                    <input
+                        type="password"
+                        id="githubTokenInput"
+                        placeholder="Paste your GitHub Personal Access Token here"
+                        aria-describedby="token-help"
+                    >
+                    <div id="token-help" class="help-text">
+                        Optional: supply a Personal Access Token to access private repositories and increase API quota. Token is stored only for this session.
+                    </div>
+                    <div class="token-controls">
+                        <button id="setTokenBtn" class="secondary-button">Set Token</button>
+                        <button id="clearTokenBtn" class="secondary-button">Remove Token</button>
+                        <span id="token-status" class="token-status">Not authenticated</span>
+                    </div>
+                    <div id="token-message" class="validation-message"></div>
+                </div>
+
                 <button id="analyzeBtn" class="primary-button">
                     Analyze Repository
                 </button>

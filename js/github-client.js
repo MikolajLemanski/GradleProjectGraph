@@ -12,6 +12,41 @@ let rateLimitInfo = {
     reset: null
 };
 
+// Session token (in-memory only)
+let sessionToken = null;
+
+export function setSessionToken(token) {
+    sessionToken = token;
+}
+
+export function clearSessionToken() {
+    sessionToken = null;
+}
+
+export function getSessionToken() {
+    return sessionToken;
+}
+
+// Validate current session token by calling the /user endpoint
+export async function validateSessionToken() {
+    if (!sessionToken) return { valid: false };
+
+    const url = `${GITHUB_API_BASE}/user`;
+    try {
+        const response = await fetchWithRateLimit(url, {}, 1);
+        if (response.status === 401) {
+            return { valid: false, status: 401 };
+        }
+        if (!response.ok) {
+            return { valid: false, status: response.status };
+        }
+        const data = await response.json();
+        return { valid: true, username: data.login };
+    } catch (error) {
+        return { valid: false, error };
+    }
+}
+
 // Delay utility
 function sleep(ms) {
     return new Promise(resolve => setTimeout(resolve, ms));
@@ -34,7 +69,7 @@ export function getRateLimitInfo() {
 }
 
 // Enhanced fetch with rate limit awareness and retry logic
-async function fetchWithRateLimit(url, retries = 3, baseDelay = 1000) {
+async function fetchWithRateLimit(url, options = {}, retries = 3, baseDelay = 1000) {
     for (let attempt = 0; attempt < retries; attempt++) {
         try {
             // Add delay before request if we're getting close to rate limit
@@ -43,7 +78,15 @@ async function fetchWithRateLimit(url, retries = 3, baseDelay = 1000) {
                 await sleep(2000);
             }
             
-            const response = await fetch(url);
+            // Inject Authorization header when a session token is present
+            const fetchOptions = { ...options };
+            const headers = new Headers(fetchOptions.headers || {});
+            if (sessionToken) {
+                headers.set('Authorization', `token ${sessionToken}`);
+            }
+            fetchOptions.headers = headers;
+
+            const response = await fetch(url, fetchOptions);
             
             // Update rate limit info from headers
             updateRateLimitInfo(response);
